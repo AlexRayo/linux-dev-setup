@@ -11,7 +11,7 @@ menu(){
 	4- Fix issue install/update wordpress pluging
 	
 	5- Show REACT NATIVE Setup
-	6- Give gradles access(AndroidStudio is required)	
+	6- Show some tips	
 	7- Add Android Path files
 
 	8- Generate github SSH key
@@ -23,7 +23,7 @@ menu(){
 
 	case $option in
 		1)
-			sudo pacman -S nodejs npm
+			sudo pacman -Syu nodejs npm
 			menu
 			;;
 			
@@ -74,28 +74,28 @@ menu(){
 		
 		5)
 			#SHOW THE REACT NATIVE SETUP
-			echo "
-				REACT NATIVE Setup
-	
-				* Install AndroidStudio from software center.
+			printf '\nREACT NATIVE Setup
+https://reactnative.dev/docs/0.60/enviroment-setup
+
+* Install AndroidStudio from software center.
 				
-				* INSTALL additional SDK and Android dev package
-					* Android SDK Platform 31
-					* Intel x86 Atom_64 System Image
-					* Google APIs Intel x86 Atom System Image
-					* Google Play Intel x86 Atom System Image
+* INSTALL additional SDK and Android dev package
+* Android SDK Platform 31
+* Intel x86 Atom_64 System Image
+* Google APIs Intel x86 Atom System Image
+* Google Play Intel x86 Atom System Image
 					
-				* OPEN the android VIRTUAL DEVICE MANAGER to the setup the emulator
-					*Choose a device and install the required API
-					*Launch the emulator to make sure this works as expected
-			"
+* OPEN the android VIRTUAL DEVICE MANAGER to the setup the emulator
+*Choose a device and install the required API
+*Launch the emulator to make sure this works as expected'
+			
 			menu
 			;;
 		
 		6)
 			#GIVE PERMISSIONS TO GRADLEs
-			echo "✅ Giving permissions to GRADLEs"
-			sudo chmod 755 android/gradlew
+			echo "Is recomended to give permissions to GRADLEs in your project"
+			echo 'sudo chmod 755 android/gradlew'
 			menu
 			;; 
 		
@@ -107,41 +107,58 @@ menu(){
 			echo "FILE CONTENT:"
 			cat $FILE
 
-			TEXT_TO_FILE='export ANDROID_HOME=$HOME/Android/Sdk export PATH=$PATH:$ANDROID_HOME/emulator export PATH=$PATH:$ANDROID_HOME/platform-tools'
-
-			if ! grep -qxF "$TEXT_TO_FILE" "$FILE"; then
+			if ! grep -q 'ANDROID_HOME' "$FILE"; then
 				echo '✅ Adding android paths...'
-				echo -e "$TEXT_TO_FILE" >> "$FILE"
+				echo -e 'export PATH=$PATH:$ANDROID_HOME/emulator' >> "$FILE"
+				echo -e 'export PATH=$PATH:$ANDROID_HOME/tools' >> "$FILE"
+				echo -e 'export PATH=$PATH:$ANDROID_HOME/tools/bin' >> "$FILE"
+				echo -e 'export PATH=$PATH:$ANDROID_HOME/platform-tools' >> "$FILE"
 			else
 				echo '✅ Android paths already added'
 			fi
 
-			menu
-			;;
-			
-		8)
-			echo 'What is your github email?'
-				read EMAIL
-			echo 'What is your github username?'
-				read USERNAME					
-
-			ssh-keygen -t ed25519 -C "$EMAIL"
-			echo 'Your SSH key is 👇:'
-			cat /home/$USER/.ssh/id_ed25519.pub
-
-			echo "Wanna add to global, github email: $EMAIL and username: $USERNAME? (y/n)"
+			echo 'You need to restart your pc in order to finish the ANDROID_HOME setup. Restart now? (y/n)'
 			read ANSWER
+			ANSWER=$(echo "$ANSWER" | tr '[:upper:]' '[:lower:]')
 			
-			if [$ANSWER == "yes" || $ANSWER ==  "y" || $ANSWER ==  "Y"]; then
-				git config --global user.email "$EMAIL"
-				git config --global user.username "$USERNAME"
+			if [ "$ANSWER" = "y" || "$ANSWER" = "yes"]; then
+				sudo systemctl reboot
 				menu	
 			else
 				menu
 			fi
-			#eval "$(ssh-agent -s)"
-			#ssh-add ~/.ssh/id_ed25519
-			;;			
+			menu
+			;;
+			
+		8)
+			printf 'What is your github email? '
+read EMAIL
+printf 'What is your github username? '
+read USERNAME
+
+ssh-keygen -t ed25519 -C "$EMAIL"
+printf '\nYour SSH key is 👇: \n'
+cat /home/$USER/.ssh/id_ed25519.pub
+
+printf "\nWanna add to global, this github email and username? (y/n): "
+read ANSWER
+ANSWER=$(echo "$ANSWER" | tr '[:upper:]' '[:lower:]')
+
+if [ "$ANSWER" = "y" || "$ANSWER" = "yes"]; then
+    git config --global user.email "$EMAIL"
+    git config --global user.username "$USERNAME"
+		printf "\nNice!. Your email and username where added to global"
+    menu    
+else
+		printf "\n❌ your anwer was $ANSWER, so the email and password you entered was not added"
+    menu
+fi
+
+			;;
+			test)
+
+			menu
+			;;		
 		
 		e)
 			exit 1
