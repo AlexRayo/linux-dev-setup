@@ -121,7 +121,7 @@ https://reactnative.dev/docs/0.60/enviroment-setup
 			read ANSWER
 			ANSWER=$(echo "$ANSWER" | tr '[:upper:]' '[:lower:]')
 			
-			if [ "$ANSWER" = "y" || "$ANSWER" = "yes"]; then
+			if [ "$ANSWER" = "y" ] || [ "$ANSWER" = "yes" ]; then
 				sudo systemctl reboot
 				menu	
 			else
@@ -144,20 +144,29 @@ printf "\nWanna add to global, this github email and username? (y/n): "
 read ANSWER
 ANSWER=$(echo "$ANSWER" | tr '[:upper:]' '[:lower:]')
 
-if [ "$ANSWER" = "y" || "$ANSWER" = "yes"]; then
+if [ "$ANSWER" = "y" ] || [ "$ANSWER" = "yes" ]; then
     git config --global user.email "$EMAIL"
     git config --global user.username "$USERNAME"
 		printf "\nNice!. Your email and username where added to global"
     menu    
 else
-		printf "\n❌ your anwer was $ANSWER, so the email and password you entered was not added"
+		printf "\n❌ your answer was $ANSWER, so the email and password you entered was not added"
     menu
 fi
 
 			;;
 			test)
+printf "\nWrite an answer? (y/n): "
+read ANSWER
+ANSWER=$(echo "$ANSWER" | tr '[:upper:]' '[:lower:]')
 
-			menu
+if [ "$ANSWER" = "y" ] || [ "$ANSWER" = "yes" ]; then
+	printf "Your answer was POSITIVE!!"
+    menu    
+else
+	printf "\n❌ your answer was $ANSWER"
+    menu
+fi
 			;;		
 		
 		e)
