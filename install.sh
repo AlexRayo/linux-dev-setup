@@ -155,6 +155,36 @@ else
 fi
 
 			;;
+			9)
+			#ADD ANDROID DEV PATHS IN UBUNTU/DEV DISTROS
+			FILE="/home/$USER/.bashrc"
+			echo "FILE LOCATION: $FILE"
+
+			echo "FILE CONTENT:"
+			cat $FILE
+
+			if ! grep -q 'ANDROID_HOME' "$FILE"; then
+				echo '✅ Adding android paths...'
+				echo -e 'export PATH=$PATH:$ANDROID_HOME/emulator' >> "$FILE"
+				echo -e 'export PATH=$PATH:$ANDROID_HOME/tools' >> "$FILE"
+				echo -e 'export PATH=$PATH:$ANDROID_HOME/tools/bin' >> "$FILE"
+				echo -e 'export PATH=$PATH:$ANDROID_HOME/platform-tools' >> "$FILE"
+			else
+				echo '✅ Android paths already added'
+			fi
+
+			echo 'You need to restart your pc in order to finish the ANDROID_HOME setup. Restart now? (y/n)'
+			read ANSWER
+			ANSWER=$(echo "$ANSWER" | tr '[:upper:]' '[:lower:]')
+			
+			if [ "$ANSWER" = "y" ] || [ "$ANSWER" = "yes" ]; then
+				sudo systemctl reboot
+				menu	
+			else
+				menu
+			fi
+			menu
+			;;
 			test)
 printf "\nWrite an answer? (y/n): "
 read ANSWER
