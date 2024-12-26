@@ -4,8 +4,8 @@ menu(){
 
 **********************************************
 	Pick an option:
-	1- Install NodeJS
-	2- Install Java-11
+	1- Install NodeJS on ArchLinux dists
+	2- Install Java-11 on ArchLinux dists
 	
 	3- Add Wordpress(XAMPP is required)
 	4- Fix issue install/update wordpress pluging
@@ -15,6 +15,8 @@ menu(){
 	7- Add Android Path files
 
 	8- Generate github SSH key
+
+	8- Install NodeJS for Ubuntu/debian dists
 
 **********************************************
 	"
@@ -197,7 +199,25 @@ else
 	printf "\n❌ your answer was $ANSWER"
     menu
 fi
-			;;		
+			;;
+			10)
+            # Instalación de Node.js en distribuciones Debian
+            echo "Instalando Node.js en tu distribución Debian..."
+
+            # Instalar curl si no está instalado
+            sudo apt-get install -y curl
+
+            # Descargar e instalar el script de configuración de Node.js
+            curl -fsSL https://deb.nodesource.com/setup_22.x -o nodesource_setup.sh
+            sudo -E bash nodesource_setup.sh
+
+            # Instalar Node.js
+            sudo apt-get install -y nodejs
+
+            echo "Node.js instalado correctamente."
+
+            menu
+            ;;
 		
 		e)
 			exit 1
