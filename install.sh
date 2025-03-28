@@ -16,7 +16,8 @@ menu(){
 
 	8- Generate github SSH key
 
-	8- Install NodeJS for Ubuntu/debian dists
+	10- Install NodeJS for Ubuntu/debian dists
+	11- Install Java-11 for Ubuntu/debian dists
 
 **********************************************
 	"
@@ -218,6 +219,23 @@ fi
 
             menu
             ;;
+		11)
+    echo "Instalando Java 11 (OpenJDK) en Linux Mint..."
+    
+    # Actualizar lista de paquetes
+    sudo apt update -y
+    
+    # Instalar OpenJDK 11
+    sudo apt install -y openjdk-11-jdk
+    
+    # Verificar instalación
+    java -version
+    
+    echo "Java 11 instalado correctamente."
+    
+    menu
+    ;;
+
 		
 		e)
 			exit 1
