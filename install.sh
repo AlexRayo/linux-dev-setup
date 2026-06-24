@@ -71,18 +71,36 @@ EOF
         fi
       fi
       ;;
-    4)
+        4)
       # FIX THE ISSUE FOR INSTALLING AND UPDATING WORDPRESS PLUGINS
       TEXT_TO_FILE="define( 'FS_METHOD', 'direct' );"
       FILE="/opt/lampp/htdocs/wordpress/wp-config.php"
+      WP_CONTENT="/opt/lampp/htdocs/wordpress/wp-content"
 
       if [ -f "$FILE" ]; then
-        echo 'Checking file wp-config.php...'
+        echo 'Checking wp-config.php...'
+
         if grep -Fq "$TEXT_TO_FILE" "$FILE"; then
-          echo '✅ line to fix install and update plugins already added'
+          echo '✅ FS_METHOD already configured'
         else
-          echo '✅ Adding line to fix install and update plugins...'
+          echo '✅ Adding FS_METHOD configuration...'
           printf '%s\n' "$TEXT_TO_FILE" | sudo tee -a "$FILE" >/dev/null
+        fi
+
+        if [ -d "$WP_CONTENT" ]; then
+          echo 'Fixing Wordpress permissions for plugins/themes updates...'
+
+          sudo chown -R daemon:daemon "$WP_CONTENT"
+
+          sudo find "$WP_CONTENT" -type d -exec chmod 775 {} \;
+          sudo find "$WP_CONTENT" -type f -exec chmod 664 {} \;
+
+          sudo mkdir -p "$WP_CONTENT/upgrade"
+
+          echo '✅ Wordpress permissions fixed'
+          echo '✅ Upgrade directory verified'
+        else
+          echo "❌ wp-content directory not found"
         fi
       else
         echo "❌ You haven't setup your wordpress yet (wp-config.php not found in /opt/lampp/htdocs/wordpress)."
